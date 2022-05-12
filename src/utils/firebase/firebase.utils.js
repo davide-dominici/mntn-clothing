@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithRedirect, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 
 
@@ -14,7 +14,9 @@ const firebaseConfig = {
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
-//Init google Oauth 
+
+
+//Setup google Oauth 
 const authProvider = new GoogleAuthProvider();
 authProvider.setCustomParameters({
   prompt: 'select_account'
@@ -24,9 +26,51 @@ authProvider.setCustomParameters({
 export const auth = getAuth();
 export const googleSignIn = () => signInWithPopup(auth, authProvider);
 
-export const database = getFirestore();
-const createUserDocumentFromAuth = async (userAuth) => {
-  const userDocumentRef = doc(database, 'users', userAuth.uid);
+
+//Setup email auth
+export const createEmailAndPasswordAuth = async (email, password) => {
+
+  if(!email || !password) {
+    return;
+  }
+
+  return await createUserWithEmailAndPassword(auth, email, password);
+};
+
+export const signInEmailAndPassAuth = async (email, password) => {
+  if(!email || !password) {
+    return;
+  }
+
+  return await signInWithEmailAndPassword(auth, email, password);
 }
 
+//Firestore database setup
+export const database = getFirestore();
 
+//Generate user document
+export const createUserDocumentFromAuth = async (userAuth, additionalInfo) => {
+
+
+  const userDocumentRef = doc(database, 'users', userAuth.uid);
+
+  //get user data
+  const userSnapshot = await getDoc(userDocumentRef)
+
+  //if user data doesn't exist then create it
+  if(!userSnapshot.exists()) {
+    const { displayName, email } = userAuth;
+    const createdAt = new Date();
+
+    try {
+      await setDoc(userDocumentRef, {
+        displayName,
+        email,
+        createdAt,
+        ...additionalInfo,
+      });
+    } catch(error) {
+        console.log('User creation failed', error);
+    }
+  }
+}
