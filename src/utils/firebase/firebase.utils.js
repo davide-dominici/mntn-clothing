@@ -1,5 +1,13 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { 
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+  } from 'firebase/auth';
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 
 
@@ -27,7 +35,7 @@ export const auth = getAuth();
 export const googleSignIn = () => signInWithPopup(auth, authProvider);
 
 
-//Setup email auth
+//Setup email auth and create user record
 export const createEmailAndPasswordAuth = async (email, password) => {
 
   if(!email || !password) {
@@ -37,6 +45,7 @@ export const createEmailAndPasswordAuth = async (email, password) => {
   return await createUserWithEmailAndPassword(auth, email, password);
 };
 
+//Sign in user with email and pass
 export const signInEmailAndPassAuth = async (email, password) => {
   if(!email || !password) {
     return;
@@ -44,6 +53,9 @@ export const signInEmailAndPassAuth = async (email, password) => {
 
   return await signInWithEmailAndPassword(auth, email, password);
 }
+
+//sign out user
+export const signOutUser = async () => {await signOut(auth);}
 
 //Firestore database setup
 export const database = getFirestore();
@@ -73,4 +85,9 @@ export const createUserDocumentFromAuth = async (userAuth, additionalInfo) => {
         console.log('User creation failed', error);
     }
   }
+}
+
+//Listen for authentication changes
+export const onAuthStateChangedListener = (callback) => {
+  onAuthStateChanged(auth, callback);
 }

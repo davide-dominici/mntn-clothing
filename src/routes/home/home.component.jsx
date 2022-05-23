@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
 
-import DirectoryMenu from '../../components/directory-menu/directory-menu.component';
+import DirectoryMenu from '../../components/directory_menu/directory_menu.component';
 
 const Home = () => {
 

@@ -1,8 +1,11 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+
 import { signInEmailAndPassAuth, googleSignIn, createUserDocumentFromAuth } from '../../utils/firebase/firebase.utils';
-import FormInput from '../form-input/form-input.component';
+
+import FormInput from '../form_input/form_input.component';
 import Button from '../button/button.component';
-import './sign-in.styles.scss';
+
+import './sign_in.styles.scss';
 
 
 const defaultFields = {
@@ -16,11 +19,9 @@ const SignIn = () => {
 
   const [ formFields, setFormFields ] = useState(defaultFields);
   const { email, password } = formFields;
-
   
   const googleUserSignIn = async () => {
-    const { user } = await googleSignIn();
-    await createUserDocumentFromAuth(user);
+    await googleSignIn();
   }
 
   const resetFields = () => {
@@ -38,7 +39,7 @@ const SignIn = () => {
 
     try {
 
-      const response = await signInEmailAndPassAuth(email, password);
+      const { user } = await signInEmailAndPassAuth(email, password);
 
       resetFields();
 

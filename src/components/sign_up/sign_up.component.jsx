@@ -1,8 +1,11 @@
 import { useState } from 'react';
+
 import { createEmailAndPasswordAuth, createUserDocumentFromAuth } from '../../utils/firebase/firebase.utils';
-import FormInput from '../form-input/form-input.component';
+
+import FormInput from '../form_input/form_input.component';
 import Button from '../button/button.component';
-import './sign-up.styles.scss';
+
+import './sign_up.styles.scss';
 
 
 const defaultSignUpFields = {
@@ -17,7 +20,6 @@ const SignUp = () => {
   const [ formFields, setFormFields ] = useState(defaultSignUpFields);
   const { displayName, email, password, confirmPassword } = formFields;
 
-  
   const resetFields = () => {
     setFormFields(defaultSignUpFields);
   }
@@ -44,9 +46,9 @@ const SignUp = () => {
 
     } catch(err) {
 
-      if(err.code == 'auth/email-already-in-use') {
+      if(err.code === 'auth/email-already-in-use') {
         alert('Email already in use');
-      } else if (err.code == 'auth/weak-password') {
+      } else if (err.code === 'auth/weak-password') {
         alert('Password must be at least 6 characters long');
       } else {
         console.log('User creation failed', err);
