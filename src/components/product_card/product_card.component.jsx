@@ -3,7 +3,10 @@ import { CartContext } from '../../contexts/cart.context';
 
 import Button from '../button/button.component';
 
-import './product_card.styles.scss';
+import {
+  ProductCardContainerStyled,
+  FooterStyled
+} from './product_card.styles';
 
 
 
@@ -14,14 +17,14 @@ const ProductCard = ({ productValues }) => {
   const addSelectedProductToCart = () => addItemToCart(productValues);
 
   return (
-    <div className='product-card-container'>
+    <ProductCardContainerStyled>
       <img src={imageUrl} alt={`${name} image`} />
-      <div className='footer'>
+      <FooterStyled>
         <span className='name'>{name}</span>
         <span className='price'>{price}€</span>
-      </div>
+      </FooterStyled>
       <Button btnClass='inverted' btnText='Add to cart' btnProps={{onClick: addSelectedProductToCart}}></Button>
-    </div>
+    </ProductCardContainerStyled>
   )
 }
 

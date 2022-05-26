@@ -1,4 +1,5 @@
 import { initializeApp } from 'firebase/app';
+
 import { 
   getAuth,
   signInWithPopup,
@@ -6,9 +7,19 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  onAuthStateChanged
-  } from 'firebase/auth';
-import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
+  onAuthStateChanged,
+} from 'firebase/auth';
+
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  writeBatch,
+  query,
+  getDocs
+} from 'firebase/firestore';
 
 
 //Firebase authentication config
@@ -59,6 +70,35 @@ export const signOutUser = async () => {await signOut(auth);}
 
 //Firestore database setup
 export const database = getFirestore();
+
+//Add new objects to firestore db
+export const addCollectionAndDocumentsToDb = async (key, objects) => {
+  const collectionReference = collection(database, key);
+  const batchData = writeBatch(database);
+
+  //Iterate over each object in batch and create new document reference for each one
+  objects.forEach((object) => {
+    const documentRef = doc(collectionReference, object.title.toLowerCase())
+    batchData.set(documentRef, object);
+  });
+
+  await batchData.commit();
+}
+
+export const getCategoriesAndDocumentsFromDb = async () => {
+  const collectionReference = collection(database, 'categories');
+  const collectionQuery = query(collectionReference);
+
+  const querySnapshot = await getDocs(collectionQuery);
+
+  const categoryMap = querySnapshot.docs.reduce((accumulator, docSnapshot) => {
+    const { title, items } = docSnapshot.data();
+    accumulator[title.toLowerCase()] = items;
+    return accumulator;
+  }, {});
+
+  return categoryMap;
+}
 
 //Generate user document
 export const createUserDocumentFromAuth = async (userAuth, additionalInfo) => {

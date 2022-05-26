@@ -5,7 +5,10 @@ import { CartContext } from '../../contexts/cart.context';
 import Button from '../button/button.component';
 import CartItem from '../cart_item/cart_item.component';
 
-import './cart_dropdown.styles.scss';
+import {
+  CartDropdownContainerStyled,
+  CartItemsStyled
+} from './cart_dropdown.styles';
 
 
 
@@ -19,12 +22,19 @@ const CartDropdown = () => {
   }
 
   return(
-    <div className='cart-dropdown-container'>
-      <div className='cart-items'>
-        {cartItems.map(item => <CartItem key={item.id} cartProduct={item} />)}
-      </div>
+    <CartDropdownContainerStyled>
+      <CartItemsStyled>
+        {
+          //If there are no cart items show a message
+          cartItems.length ? (
+            cartItems.map(item => <CartItem key={item.id} cartProduct={item} />)
+          ) : (
+            <span>Empty</span>
+          )
+        }
+      </CartItemsStyled>
       <Button btnText={'Go to Chekout'} btnProps={{onClick: goToCheckout}}></Button>
-    </div>
+    </CartDropdownContainerStyled>
   )
 }
 

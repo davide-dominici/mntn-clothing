@@ -1,17 +1,27 @@
 import { createContext, useState, useEffect } from "react";
-import catalog from '../shop_data.json';
 
-export const ProductContext = createContext({
+import { getCategoriesAndDocumentsFromDb } from "../utils/firebase/firebase.utils.js";
 
-  products: [],
-  setProduct: () => null
+export const CatalogContext = createContext({
+
+  catalogMap: {}
 
 });
 
-export const ProductProvider = ({ children }) => {
+export const CatalogProvider = ({ children }) => {
 
-  const [ products, setProduct ] = useState(catalog);
-  const value = { products };
+  const [ catalogMap, setCatalogMap ] = useState({});
 
-  return <ProductContext.Provider value={value} >{children}</ProductContext.Provider>
+  useEffect(() => {
+    const getCatalogMap = async () => {
+      const catalogMap = await getCategoriesAndDocumentsFromDb();
+      setCatalogMap(catalogMap);
+    }
+
+    getCatalogMap();
+  }, []);
+
+  const value = { catalogMap };
+
+  return <CatalogContext.Provider value={value} >{children}</CatalogContext.Provider>
 }

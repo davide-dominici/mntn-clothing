@@ -1,11 +1,14 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 
-import { signInEmailAndPassAuth, googleSignIn, createUserDocumentFromAuth } from '../../utils/firebase/firebase.utils';
+import { signInEmailAndPassAuth, googleSignIn } from '../../utils/firebase/firebase.utils';
 
 import FormInput from '../form_input/form_input.component';
-import Button from '../button/button.component';
+import Button, { BUTTON_TYPES } from '../button/button.component';
 
-import './sign_in.styles.scss';
+import {
+  SignInContainerStyled,
+  BtnContainerStyled
+} from './sign_in.styles';
 
 
 const defaultFields = {
@@ -58,7 +61,7 @@ const SignIn = () => {
   }
 
   return (
-    <div className='sign-up-container'>
+    <SignInContainerStyled>
       <h2>Already registered?</h2>
       <span>Sign in with your email and password</span>
       <form onSubmit={submitHandler} >
@@ -76,12 +79,12 @@ const SignIn = () => {
           onChange: changeHandler,
           required: true
         }} />
-        <div className='btns-container'>
+        <BtnContainerStyled>
           <Button btnText='Sign In' btnProps={{type: 'submit'}}></Button>
-          <Button btnText='Sign In With Google' btnClass='google' btnProps={{type:'button', onClick: googleUserSignIn}}></Button>
-        </div>
+          <Button btnText='Sign In With Google' btnType={BUTTON_TYPES.google} btnProps={{type:'button', onClick: googleUserSignIn}}></Button>
+        </BtnContainerStyled>
       </form>
-    </div>
+    </SignInContainerStyled>
   )
 }
 
